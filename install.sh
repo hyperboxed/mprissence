@@ -7,8 +7,8 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # configuration
-APP_NAME="elisa-discord-rpc"
-SCRIPT_NAME="elisa_rpc.py"
+APP_NAME="mprissence"
+SCRIPT_NAME="mprissence.py"
 INSTALL_DIR="$HOME/.local/share/$APP_NAME"
 SERVICE_DIR="$HOME/.config/systemd/user"
 SERVICE_FILE="$SERVICE_DIR/$APP_NAME.service"
@@ -24,7 +24,7 @@ cat << "EOF"
             S E N C E
 EOF
 echo -e "${NC}"
-echo "Installing MPRIS Discord Presence for Elisa..."
+echo "Installing MPRISsence..."
 echo "----------------------------------------------"
 
 # 2. function to install system dependencies
@@ -170,7 +170,7 @@ mkdir -p "$SERVICE_DIR"
 # we use the absolute path to the venv python executable
 cat <<EOF > "$SERVICE_FILE"
 [Unit]
-Description=Discord RPC for Elisa Music Player
+Description=Discord RPC for Elisa Music Player (and in future even more MPRIS-comptatible audio players!)
 After=network.target sound.target
 
 [Service]

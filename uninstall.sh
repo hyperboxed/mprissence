@@ -19,4 +19,4 @@ if [ -d "$INSTALL_DIR" ]; then
     rm -rf "$INSTALL_DIR"
 fi
 
-echo "Elisa Discord RPC successfully uninstalled."
+echo "MPRISsence successfully uninstalled."
