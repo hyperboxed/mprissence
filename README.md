@@ -1,129 +1,177 @@
-# 🎵 Elisa Music Player Discord RPC
-
-A lightweight, feature-rich Discord Rich Presence (RPC) client for the Elisa Music Player (and other MPRIS-compatible players) on Linux.
-
-![alt text](https://img.shields.io/badge/Python-3.8%2B-blue?style=for-the-badge&logo=python)
-
-
-![alt text](https://img.shields.io/badge/Linux-D--Bus-orange?style=for-the-badge&logo=linux)
-
-
-![alt text](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-
-This daemon connects to Elisa via D-Bus/MPRIS and updates your Discord status with the current track, artist, elapsed time, and album art.
-
-✨ Features
-
-Rich Metadata: Displays Track Title, Artist, and Album.
-
-Smart Cover Art System:
-
-Remote URLs: If the player provides an HTTP URL, it uses it.
-
-Local Files: If the cover is stored locally on your disk, it temporarily uploads it to Imgur so Discord can display it.
-
-Fallback Search: If no cover is found, it searches iTunes API to find the correct artwork.
-
-Seek Detection: Correctly updates the timestamp if you scrub/seek through the song.
-
-Pause Handling: Shows a "Paused" status or clears the presence when stopped.
-
-Systemd Integration: Runs silently in the background as a user service.
-
-🚀 Installation
-
-An automated installer is included to handle dependencies (Python venv, DBus headers) and service registration.
-
-1. Clone the repository
-```bash
-git clone https://github.com/YOUR_USERNAME/elisa-discord-rpc.git
-cd elisa-discord-rpc
+```
+███╗   ███╗██████╗ ██████╗ ██╗██████╗
+████╗ ████║██╔══██╗██╔══██╗██║██╔════╝
+██╔████╔██║██████╔╝██████╔╝██║███████╗
+██║╚██╔╝██║██╔═══╝ ██╔══██╗██║╚════██║
+██║ ╚═╝ ██║██║     ██║  ██║██║███████║
+╚═╝     ╚═╝╚═╝     ╚═╝  ╚═╝╚═╝╚══════╝
+            S E N C E
 ```
 
-2. Run the installer
+# 🎵 **Elisa Music Player Discord RPC**
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.8%2B-blue?style=for-the-badge&logo=python"/>
+  <img src="https://img.shields.io/badge/Linux-D--Bus-orange?style=for-the-badge&logo=linux"/>
+  <img src="https://img.shields.io/badge/MPRIS-Compatible-purple?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Discord-RPC-5865F2?style=for-the-badge&logo=discord&logoColor=white"/>
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge"/>
+</p>
+
+A lightweight, feature-rich Discord Rich Presence (RPC) client for the **Elisa Music Player** (for now) on Linux.
+
+Technically, it should work on any MPRIS-compatible player, but it needs to be tested on other players, plus it needs some more customization (like icons for the corresponding players).
+
+It also features cover art fetching from iTunes.
+If the cover isn't found on iTunes, it will be uploaded to Imgur and cached for future use, and then deleted from Imgur when the track is no longer playing!
+
+✨ Automatically updates your Discord status with track title, artist, progress, playback state, and album art.
+
+---
+
+## 📚 **Table of Contents**
+
+* [✨ Features](#-features)
+* [🖼 Demo](#-demo)
+* [🚀 Installation](#-installation)
+* [🛠 Management](#-management)
+* [🗑 Uninstallation](#-uninstallation)
+* [🧩 How it Works](#-how-it-works)
+* [📦 Requirements](#-requirements)
+* [🤝 Contributing](#-contributing)
+
+---
+
+## ✨ **Features**
+
+| Function               | Status | Description                                      |
+| ---------------------- | ------ | ------------------------------------------------ |
+| 🎵 Rich Metadata       | ✔      | Track name, artist, album                        |
+| 🖼 Smart Cover Art     | ✔      | Remote URL → Local file → iTunes search fallback |
+| ⏱️ Seek Detection       | ✔      | Correct timestamp calculation                    |
+| 💤 Pause/Stop Logic    | ✔      | Smart status hiding/switching                    |
+| 🔥 Systemd Integration | ✔      | Background service without interface             |
+| 📦 Caching             | ✔      | Minimizes API requests to save traffic             |
+
+---
+
+## 🖼 **Preview**
+
+<p align="center">
+  <img src="assets/demo.png" width="480" />
+</p>
+
+---
+
+## 🚀 **Installation**
+
+1. **Clone the repository**
+
+```bash
+git clone https://github.com/hyperboxed/mprissence.git
+cd mprissence
+```
+
+2. **Run the installer**
+
 ```bash
 chmod +x install.sh
 ./install.sh
 ```
 
-The script will check for necessary system libraries (like libdbus-1-dev), set up a virtual environment, and register the systemd service.
+The script automatically:
 
-🛠 Management
+* Checks DBus development headers
+* Creates Python virtual environment
+* Installs Python dependencies
+* Registers a systemd user service
 
-Since the script runs as a systemd user service, you can manage it using standard commands:
+---
+
+## 🛠 **Management**
 
 Check status:
 
-code
-Bash
-download
-content_copy
-expand_less
-systemctl --user status elisa-discord-rpc
+```bash
+systemctl --user status mprissence
+```
 
-View logs (useful for debugging):
+View logs:
 
-code
-Bash
-download
-content_copy
-expand_less
-journalctl --user -u elisa-discord-rpc -f
+```bash
+journalctl --user -u mprissence -f
+```
 
-Restart the service:
+Restart:
 
-code
-Bash
-download
-content_copy
-expand_less
-systemctl --user restart elisa-discord-rpc
+```bash
+systemctl --user restart mprissence
+```
 
-Stop the service:
+Stop:
 
-code
-Bash
-download
-content_copy
-expand_less
-systemctl --user stop elisa-discord-rpc
-🗑 Uninstallation
+```bash
+systemctl --user stop mprissence
+```
 
-If you want to remove the RPC client and clean up all files:
+---
 
-code
-Bash
-download
-content_copy
-expand_less
+## 🗑 **Uninstallation**
+
+```bash
 chmod +x uninstall.sh
 ./uninstall.sh
-🧩 How it Works
+```
 
-This script uses dbus-python to listen to the org.mpris.MediaPlayer2.elisa interface.
+---
 
-Activity: It updates the Discord status every second only if the state has changed (track change, seek, pause).
+## 🧩 **How it Works**
 
-Performance: It uses a persistent connection and caches cover art URLs to minimize API usage and CPU load.
+### 🖧 Architecture
 
-Imgur: Local cover art uploads are anonymous and deleted from memory when the track changes (handled via Imgur delete hashes where possible).
+```mermaid
+flowchart LR
+    A[Elisa Player] --> B[MPRIS / DBus]
+    B --> C[RPC Daemon]
+    C --> D[Discord IPC]
+```
 
-📝 Requirements
+### 🔍 Activity Logic
 
-Linux OS (Arch, Ubuntu, Fedora, etc.)
+* Updates every second **only when state changes**
+* Detects seek events and recalculates timestamps
+* Clears presence when playback stops
 
-Python 3
+### ⚙ Performance
 
-dbus-python prerequisites (handled by install.sh):
+* Persistent DBus session
+* Cached artwork + delete-hashes
+* Minimal CPU usage
 
-Debian/Ubuntu: libdbus-1-dev libglib2.0-dev
+---
 
-Arch: dbus-glib
+## 📦 **Requirements**
 
-Fedora: dbus-devel
+* Linux OS (Arch, Ubuntu, Fedora, etc.)
+* Python 3
+* DBus/MPRIS
+* Development headers:
 
-🤝 Contributing
+  * Debian/Ubuntu: `libdbus-1-dev libglib2.0-dev`
+  * Arch: `dbus-glib`
+  * Fedora: `dbus-devel`
 
-Feel free to open issues or pull requests if you find bugs or want to add support for other MPRIS players!
+‼️ By the way, the installation script will automatically install the required dependencies
 
-Built with ❤️ for the Linux community.
+---
+
+## 🤝 **Contributing**
+
+Any PR's and issues are welcome, especially if you want to add even more features
+
+---
+
+<p align="center">
+Made with ❤️ for the Linux community <3<br/>
+If you like this project, please leave a ⭐ on GitHub!
+</p>
