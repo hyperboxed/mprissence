@@ -47,7 +47,7 @@ If the cover isn't found on iTunes, it will be uploaded to Imgur and cached for 
 | Function               | Status | Description                                      |
 | ---------------------- | ------ | ------------------------------------------------ |
 | 🎵 Rich Metadata       | ✔      | Track name, artist, album                        |
-| 🖼 Smart Cover Art     | ✔      | Remote URL → Local file → iTunes search fallback |
+| 🖼 Smart Cover Art     | ✔      |  iTunes search fallback + local file upload |
 | ⏱️ Seek Detection       | ✔      | Correct timestamp calculation                    |
 | 💤 Pause/Stop Logic    | ✔      | Smart status hiding/switching                    |
 | 🔥 Systemd Integration | ✔      | Background service without interface             |
