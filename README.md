@@ -20,7 +20,7 @@
 
 A lightweight, feature-rich Discord Rich Presence (RPC) client for the **Elisa Music Player** (for now) on Linux.
 
-Technically, it should work on any MPRIS-compatible player, but it needs to be tested on other players, plus it needs some more customization (like icons for the corresponding players).
+Technically, it should work on any MPRIS-compatible player, but it needs to be tested on other players, plus it needs some more customization (like icons for the corresponding players). So, only for **Elisa** for now.
 
 It also features cover art fetching from iTunes.
 If the cover isn't found on iTunes, it will be uploaded to Imgur and cached for future use, and then deleted from Imgur when the track is no longer playing!
