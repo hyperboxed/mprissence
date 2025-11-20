@@ -32,7 +32,7 @@ If the cover isn't found on iTunes, it will be uploaded to Imgur and cached for 
 ## 📚 **Table of Contents**
 
 * [✨ Features](#-features)
-* [🖼 Demo](#-demo)
+* [🖼 Preview](#-preview)
 * [🚀 Installation](#-installation)
 * [🛠 Management](#-management)
 * [🗑 Uninstallation](#-uninstallation)
@@ -47,7 +47,7 @@ If the cover isn't found on iTunes, it will be uploaded to Imgur and cached for 
 | Function               | Status | Description                                      |
 | ---------------------- | ------ | ------------------------------------------------ |
 | 🎵 Rich Metadata       | ✔      | Track name, artist, album                        |
-| 🖼 Smart Cover Art     | ✔      | Remote URL → Local file → iTunes search fallback |
+| 🖼 Smart Cover Art     | ✔      |  iTunes search fallback + local file upload |
 | ⏱️ Seek Detection       | ✔      | Correct timestamp calculation                    |
 | 💤 Pause/Stop Logic    | ✔      | Smart status hiding/switching                    |
 | 🔥 Systemd Integration | ✔      | Background service without interface             |
@@ -58,7 +58,7 @@ If the cover isn't found on iTunes, it will be uploaded to Imgur and cached for 
 ## 🖼 **Preview**
 
 <p align="center">
-  <img src="assets/demo.png" width="480" />
+  <img src="https://github.com/hyperboxed/mprissence/blob/main/screenshots/preview.jpg" width="300" />
 </p>
 
 ---
