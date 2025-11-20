@@ -36,19 +36,37 @@ def search_itunes(query):
 
 def upload_to_imgur(image_path):
     try:
-        if not image_path or not image_path.startswith('file://'):
-            return None
-            
-        local_path = image_path.replace('file://', '')
-        local_path = urllib.parse.unquote(local_path)
+        b64_image = None
+        source_desc = "unknown"
+
+        # local file (file://)
+        if image_path and image_path.startswith('file://'):
+            local_path = image_path.replace('file://', '')
+            local_path = urllib.parse.unquote(local_path)
+            source_desc = local_path
+            with open(local_path, 'rb') as image_file:
+                b64_image = base64.b64encode(image_file.read())
         
-        with open(local_path, 'rb') as image_file:
-            b64_image = base64.b64encode(image_file.read())
-            
+        # embedded base64 data (data:image...)
+        elif image_path and image_path.startswith('data:image'):
+            source_desc = "embedded base64 data"
+            # we need everything after the comma
+            try:
+                b64_image = image_path.split(',', 1)[1]
+            except IndexError:
+                print("Error parsing data URI")
+                return None, None
+        
+        else:
+            return None, None
+
+        # upload to imgur
+        if b64_image:
             headers = {'Authorization': f'Client-ID {IMGUR_CLIENT_ID}'}
+            # Imgur accepts base64 string without headers
             data = {'image': b64_image, 'type': 'base64'}
             
-            print(f"Uploading local cover to Imgur: {local_path}")
+            print(f"Uploading cover to Imgur ({source_desc})...")
             response = requests.post('https://api.imgur.com/3/image', headers=headers, data=data, timeout=10)
             
             if response.status_code == 200:
@@ -56,8 +74,10 @@ def upload_to_imgur(image_path):
                 return data['link'], data['deletehash']
             else:
                 print(f"Imgur upload failed: {response.status_code} - {response.text}")
+
     except Exception as e:
         print(f"Error uploading to Imgur: {e}")
+    
     return None, None
 
 def delete_from_imgur(deletehash):
@@ -84,8 +104,6 @@ def main():
     last_status = "" 
     last_sent_start_time = 0
     
-    # state variables to persist display data between seeks/resumes
-    # so we don't have to re-upload/re-search for covers when just scrubbing the timeline
     current_large_image = "elisa_logo"
     current_large_text = "Elisa Music Player"
     current_small_image = "play_icon"
@@ -125,13 +143,32 @@ def main():
                 
                 cover_url = None
 
-                # check for remote url (http)
+                # 1. check for remote url (http)
                 if mpris_art_url.startswith('http'):
                     cover_url = mpris_art_url
                 
-                # check for local file (upload to imgur)
-                if not cover_url and mpris_art_url.startswith('file://'):
-                    # clean up previous imgur upload
+                # 2. try iTunes search
+                if not cover_url:
+                    # We are about to search/change covers, so clean up old Imgur upload
+                    if last_deletehash:
+                        delete_from_imgur(last_deletehash)
+                        last_deletehash = None
+                    
+                    # Artist + Album
+                    if album:
+                        cover_url = search_itunes(f"{artist} {album}")
+                    
+                    # Artist + Title (fallback)
+                    if not cover_url:
+                        print(f"Album art not found. Fallback search: {artist} {title}")
+                        cover_url = search_itunes(f"{artist} {title}")
+
+                # 3. upload local file or embedded data to Imgur
+                # only runs if both HTTP check and iTunes search failed
+                if not cover_url and mpris_art_url.startswith(('file://', 'data:image')):
+                    print("iTunes search failed. Uploading local/embedded art to Imgur.")
+                    
+                    # ensure cleanup (just in case)
                     if last_deletehash:
                         delete_from_imgur(last_deletehash)
                         last_deletehash = None
@@ -139,23 +176,6 @@ def main():
                     cover_url, new_deletehash = upload_to_imgur(mpris_art_url)
                     if new_deletehash:
                         last_deletehash = new_deletehash
-
-                # fallback: iTunes search
-                if not cover_url:
-                    # if we are falling back to search, clean up any previous Imgur upload
-                    if last_deletehash:
-                        delete_from_imgur(last_deletehash)
-                        last_deletehash = None
-                        
-                    # artist + album
-                    if album:
-                        # print(f"Searching iTunes for: {artist} {album}")
-                        cover_url = search_itunes(f"{artist} {album}")
-                    
-                    # artist + title (fallback if album search failed)
-                    if not cover_url:
-                        print(f"Album art not found. Fallback search: {artist} {title}")
-                        cover_url = search_itunes(f"{artist} {title}")
                 
                 # set current state vars
                 if cover_url:
@@ -226,7 +246,6 @@ def main():
         elif status == 'Paused':
             if last_status != "Paused":
                 rpc.clear()
-                # print("Track Paused")
                 last_status = "Paused"
             # do not clear last_track so we don't re-fetch cover art on resume
         
@@ -234,7 +253,6 @@ def main():
             # elisa is closed or stopped
             if last_status != "Stopped":
                 rpc.clear()
-                # print("Player Stopped/Closed")
                 last_status = "Stopped"
                 last_track = ""
                 # clean up Imgur if player stops
