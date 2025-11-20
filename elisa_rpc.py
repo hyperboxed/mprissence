@@ -147,15 +147,15 @@ def main():
                         delete_from_imgur(last_deletehash)
                         last_deletehash = None
                         
-                    # artist + title
+                    # artist + album
                     if album:
-                        # print(f"Searching iTunes for: {artist} {title}")
-                        cover_url = search_itunes(f"{artist} {title}")
-                    
-                    # artist + album (fallback if title search failed)
-                    if not cover_url:
-                        print(f"Album art not found. Fallback search: {artist} {album}")
+                        # print(f"Searching iTunes for: {artist} {album}")
                         cover_url = search_itunes(f"{artist} {album}")
+                    
+                    # artist + title (fallback if album search failed)
+                    if not cover_url:
+                        print(f"Album art not found. Fallback search: {artist} {title}")
+                        cover_url = search_itunes(f"{artist} {title}")
                 
                 # set current state vars
                 if cover_url:
