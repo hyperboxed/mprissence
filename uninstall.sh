@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APP_NAME="elisa-discord-rpc"
+APP_NAME="mprissence"
 INSTALL_DIR="$HOME/.local/share/$APP_NAME"
 SERVICE_FILE="$HOME/.config/systemd/user/$APP_NAME.service"
 
