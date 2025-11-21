@@ -79,6 +79,8 @@ chmod +x install.sh
 ./install.sh
 ```
 
+‼️ Note that the "install.sh" script **DOES NOT** need root privileges!
+
 The script automatically:
 
 * Checks DBus development headers
