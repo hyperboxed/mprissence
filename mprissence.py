@@ -234,7 +234,10 @@ def main():
                         activity_type=ActivityType.LISTENING,
                         start=start_time,
                         end=end_time,
-                        status_display_type=StatusDisplayType.STATE
+                        status_display_type=StatusDisplayType.STATE,
+                        buttons=[
+                            {"label": "Get App", "url": REPO_URL}
+                        ]
                     )
                     
                     last_track = title
