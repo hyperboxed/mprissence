@@ -92,12 +92,16 @@ def delete_from_imgur(deletehash):
 
 def main():
     rpc = Presence(CLIENT_ID)
-    try:
-        rpc.connect()
-        print("Discord RPC connected!")
-    except Exception as e:
-        print(f"Failed to connect to Discord: {e}")
-        return
+
+    connected = False
+    while not connected:
+        try:
+            rpc.connect()
+            connected = True
+            print("Discord RPC connected!")
+        except Exception as e:
+            # waiting 5 seconds before retrying again
+            time.sleep(5)
 
     last_track = ""
     last_deletehash = None
