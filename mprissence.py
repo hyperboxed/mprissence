@@ -143,7 +143,7 @@ def main():
             
             # ---> NEW TRACK DETECTED
             if title != last_track:
-                # print(f"Now playing: {title} - {artist}")
+                print(f"Now playing: {title} - {artist}")
                 
                 cover_url = None
 
@@ -223,12 +223,12 @@ def main():
                 
                 # case a: resumed from pause
                 if last_status != "Playing":
-                    # print("Resumed from pause - updating RPC")
+                    print("Resumed from pause - updating RPC")
                     should_update = True
                 
                 # case b: seek detected (e.g. slider moved > 2 seconds)
                 elif time_drift > 2:
-                    # print(f"Seek detected (drift: {time_drift:.2f}s) - updating timestamp")
+                    print(f"Seek detected (drift: {time_drift:.2f}s) - updating timestamp")
                     should_update = True
 
                 if should_update:
