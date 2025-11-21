@@ -10,7 +10,11 @@ import base64
 CLIENT_ID = '1441078347429052530'
 IMGUR_CLIENT_ID = 'd70305e7c3ac5c6' 
 
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+HASH_FILE = os.path.join(SCRIPT_DIR, ".imgur_deletehash")
+
 def get_elisa_metadata():
+    # lock to Elisa for now
     try:
         session_bus = dbus.SessionBus()
         player = session_bus.get_object('org.mpris.MediaPlayer2.elisa', '/org/mpris/MediaPlayer2')
@@ -85,6 +89,35 @@ def delete_from_imgur(deletehash):
     except Exception as e:
         print(f"Error deleting from Imgur: {e}")
 
+def save_delhash(deletehash):
+    """Saves the deletehash to a local file to handle unexpected crashes."""
+    try:
+        with open(HASH_FILE, 'w') as f:
+            f.write(deletehash)
+    except Exception as e:
+        print(f"Failed to save deletehash to file: {e}")
+
+def remove_delhash():
+    """Removes the local deletehash file."""
+    if os.path.exists(HASH_FILE):
+        try:
+            os.remove(HASH_FILE)
+        except Exception as e:
+            print(f"Failed to remove deletehash file: {e}")
+
+def mess_cleanup():
+    """Checks if a deletehash file exists from a previous run and deletes the junk image on Imgur."""
+    if os.path.exists(HASH_FILE):
+        print("Found orphaned Imgur upload from previous session. Cleaning up...")
+        try:
+            with open(HASH_FILE, 'r') as f:
+                old_hash = f.read().strip()
+            if old_hash:
+                delete_from_imgur(old_hash)
+            os.remove(HASH_FILE)
+        except Exception as e:
+            print(f"Error cleaning up orphaned image: {e}")
+
 # helper function to handle connection and reconnection loop
 def connect_discord():
     rpc = Presence(CLIENT_ID)
@@ -100,6 +133,9 @@ def connect_discord():
     return rpc
 
 def main():
+    # clean up any mess left by a previous crash
+    mess_cleanup()
+
     # initial connection
     rpc = connect_discord()
 
@@ -154,6 +190,7 @@ def main():
                     if not cover_url:
                         if last_deletehash:
                             delete_from_imgur(last_deletehash)
+                            remove_delhash() # clean file
                             last_deletehash = None
                         
                         if album:
@@ -166,10 +203,13 @@ def main():
                         print("iTunes search failed. Uploading local/embedded art to Imgur.")
                         if last_deletehash:
                             delete_from_imgur(last_deletehash)
+                            remove_delhash() # clean file
                             last_deletehash = None
+                        
                         cover_url, new_deletehash = upload_to_imgur(mpris_art_url)
                         if new_deletehash:
                             last_deletehash = new_deletehash
+                            save_delhash(new_deletehash) # save to file immediately
                     
                     if cover_url:
                         current_large_image = cover_url
@@ -247,14 +287,13 @@ def main():
                     last_track = ""
                     if last_deletehash:
                         delete_from_imgur(last_deletehash)
+                        remove_delhash() # clean file
                         last_deletehash = None
 
         except Exception as e:
-            # this catches BrokenPipeError, ConnectionResetError, etc.
             print(f"Lost connection to Discord ({e}). Reconnecting...")
             rpc = connect_discord()
             
-            # reset state to force a fresh update once connected
             last_track = "" 
             last_status = ""
             last_rpc_update_time = 0
