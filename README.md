@@ -52,6 +52,7 @@ If the cover isn't found on iTunes, it will be uploaded to Imgur and cached for 
 | 💤 Pause/Stop Logic    | ✔      | Smart status hiding/switching                    |
 | 🔥 Systemd Integration | ✔      | Background service without interface             |
 | 📦 Caching             | ✔      | Minimizes API requests to save traffic             |
+| 🛠️ More players support | ❌    | Only **Elisa** for now                           |
 
 ---
 
