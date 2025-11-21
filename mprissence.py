@@ -9,7 +9,7 @@ import base64
 
 CLIENT_ID = '1441078347429052530'
 IMGUR_CLIENT_ID = 'd70305e7c3ac5c6' 
-
+REPO_URL = "https://github.com/ТВОЙ_НИК/mprissence"
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 HASH_FILE = os.path.join(SCRIPT_DIR, ".imgur_deletehash")
 
