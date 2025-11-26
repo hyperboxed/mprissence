@@ -51,28 +51,23 @@ install_system_deps() {
     case "$ID" in
         ubuntu|debian|linuxmint|pop|neon)
             CMD="sudo apt update && sudo apt install -y"
-            # Ubuntu separates venv and pip
-            # dbus headers are needed for compilation
-            PACKAGES="python3 python3-pip python3-venv libdbus-1-dev libglib2.0-dev gcc pkg-config"
+            PACKAGES="python3 python3-pip python3-venv python3-dev libdbus-1-dev libglib2.0-dev gcc pkg-config"
             ;;
         fedora|rhel|centos)
             CMD="sudo dnf install -y"
-            # Fedora uses dbus-devel instead of libdbus-1-dev
-            PACKAGES="python3 python3-pip dbus-devel glib2-devel gcc"
+            PACKAGES="python3 python3-pip python3-devel dbus-devel glib2-devel gcc pkg-config"
             ;;
         arch|manjaro|endeavouros)
             CMD="sudo pacman -S --noconfirm"
-            # Arch uses dbus-glib instead of libdbus-1-dev
             PACKAGES="python python-pip dbus-glib base-devel"
             ;;
         opensuse*|suse)
             CMD="sudo zypper install -y"
-            # openSUSE uses dbus-1-devel instead of libdbus-1-dev
-            PACKAGES="python3 python3-pip dbus-1-devel glib2-devel gcc"
+            PACKAGES="python3 python3-pip python3-devel dbus-1-devel glib2-devel gcc pkg-config"
             ;;
         *)
             echo -e "${RED}Your distribution ($ID) is not automatically supported.${NC}"
-            echo "Please manually install Python 3 and DBus/GLib development headers."
+            echo "Please manually install Python 3, pip, python3-devel and DBus headers."
             exit 1
             ;;
     esac
