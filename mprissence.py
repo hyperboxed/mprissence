@@ -8,7 +8,8 @@ import urllib.parse
 import base64
 
 CLIENT_ID = '1441078347429052530'
-IMGUR_CLIENT_ID = 'd70305e7c3ac5c6' 
+IMGUR_CLIENT_ID = 'd70305e7c3ac5c6'
+GIT_REPO_URL = "https://github.com/hyperboxed/mprissence"
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 HASH_FILE = os.path.join(SCRIPT_DIR, ".imgur_deletehash")
 
@@ -227,13 +228,15 @@ def main():
                         state=current_state,
                         details=current_details,
                         large_image=current_large_image,
-                        large_text=current_large_text,
                         small_image=current_small_image,
                         small_text=current_small_text,
                         activity_type=ActivityType.LISTENING,
                         start=start_time,
                         end=end_time,
                         status_display_type=StatusDisplayType.STATE,
+                        buttons=[
+                            {"label": "Get App", "url": GIT_REPO_URL}
+                        ]
                     )
                     
                     last_track = title
@@ -262,13 +265,15 @@ def main():
                             state=current_state,
                             details=current_details,
                             large_image=current_large_image,
-                            large_text=current_large_text,
                             small_image=current_small_image,
                             small_text=current_small_text,
                             activity_type=ActivityType.LISTENING,
                             start=start_time,
                             end=end_time,
                             status_display_type=StatusDisplayType.STATE,
+                            buttons=[
+                                {"label": "Get App", "url": GIT_REPO_URL}
+                            ]
                         )
                         last_sent_start_time = start_time
                         last_status = "Playing"
